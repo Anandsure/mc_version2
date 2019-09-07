@@ -1,26 +1,16 @@
-from flask import Flask, make_response, request
+from flask import Flask, make_response, request, render_template
 import webbrowser
+import c2p
 
 app = Flask(__name__)
 
 def transform(text_file_contents):
-    return text_file_contents.replace("=", ",")
+    return text_file_contents.replace("=", "=")
 
 
 @app.route('/')
 def form():
-    return """
-        <html>
-            <body>
-                <h1>File Uploading and downloading</h1>
-
-                <form action="/transform" method="post" enctype="multipart/form-data">
-                    <input type="file" name="data_file" />
-                    <input type="submit" />
-                </form>
-            </body>
-        </html>
-    """
+    return render_template('gfile.html')
 
 @app.route('/transform', methods=["POST"])
 def transform_view():
@@ -32,12 +22,17 @@ def transform_view():
 
     result = transform(file_contents)
 
-    response = make_response(result)
-    response.headers["Content-Disposition"] = "attachment; filename=result.txt"
+    print(result)
+    py_list = c2p.convert(result)
+    pycode=''
+    for i in py_list:
+        print(i,end='')
+        pycode+=i
+    #print(pycode)
+    response = make_response(pycode)
+    response.headers["Content-Disposition"] = "attachment; filename=converted_py_code.py"
     return response
 
 if __name__=='__main__':
-    c=1
-    intent=[]
     webbrowser.open('http://127.0.0.1:5000/')
     app.run(debug=False)

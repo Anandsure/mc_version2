@@ -1,4 +1,4 @@
-import main
+import c2p
 
 c_code ='''
 #include<iostream>
@@ -18,5 +18,8 @@ getch()
 }'''
 
 py_list = c2p.convert(c_code)
+pycode=''
 for i in py_list:
     print(i,end='')
+    pycode+=i
+print(pycode)
